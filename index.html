@@ -690,12 +690,15 @@
                 </div>
                 <p></p>
                 <form id="SEDForm" role="form" class="formtastic sed_form formtastic sed_form" novalidate="novalidate"
-                      enctype="multipart/form-data" action="https://af-web-form.azurewebsites.net/api/af_web_cumplimiento" accept-charset="UTF-8" method="post"
-                      valid="true"><input name="utf8" type="hidden" value="✓"><input type="hidden"
-                                                                                     name="authenticity_token"
-                                                                                     value="Cru+cEv4w0wf3Ly+bj3593dsBkxZBEVRhBDPdJBD4XgZgjPEM1Gt2QNnIFQ/1ud57IzSYZT1c0yYiijNGSFcQA==">
+                      enctype="multipart/form-data"
+                      accept-charset="UTF-8" method="post"
+                      valid="true"
+                      onsubmit="return false;">
+                    <input name="utf8" type="hidden" value="✓"><input type="hidden"
+                                                                      name="authenticity_token"
+                                                                      value="Cru+cEv4w0wf3Ly+bj3593dsBkxZBEVRhBDPdJBD4XgZgjPEM1Gt2QNnIFQ/1ud57IzSYZT1c0yYiijNGSFcQA==">
                     <input type="hidden" name="l" value="es">
-<!--                     <input type="hidden" id="captcha_response" name="captcha_response" value=""> -->
+                    <!--                     <input type="hidden" id="captcha_response" name="captcha_response" value=""> -->
                     <div id="SEDWizard">
                         <script>window.onload = function () {
                             jQuery.extend(jQuery.validator.messages, {required: "Este campo es requerido."});
@@ -1811,12 +1814,14 @@
                                 </button>
                             </li>
                             <li class="next finish" style="display: none;">
-<!--                                 <button class="btn btn-info btn-cons pull-right finish" type="button"
-                                        style="display: none;">
-                                    <span>Terminar <span class="fa fa-check"></span></span>
-                                    
-                                </button> -->
-                                <input class="btn btn-info btn-cons pull-right finish" type="submit" value="Terminar">
+                                <!--                                 <button class="btn btn-info btn-cons pull-right finish" type="button"
+                                                                        style="display: none;">
+                                                                    <span>Terminar <span class="fa fa-check"></span></span>
+
+                                                                </button> -->
+                                <button class="btn btn-info btn-cons pull-right finish" type="button"
+                                        onclick="enviarFormulario()">Terminar
+                                </button>
                             </li>
                             <li class="previous first disabled" style="display:none;">
                                 <button class="btn btn-white pull-right m-r-10" type="button">
@@ -1971,6 +1976,157 @@
     </div>
 </div>
 <!-- /.modal-dialog -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.getElementById('SEDForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evita la recarga de la página.
+            enviarFormulario();
+        });
+    });
+
+    var jsonToSend; // Variable global para almacenar el JSON
+
+    function enviarFormulario() {
+        var formData = {};
+        var formElements = document.getElementById('SEDForm').elements;
+        for (var i = 0; i < formElements.length; i++) {
+            var element = formElements[i];
+            if (element.name) {
+                formData[element.name] = element.value || null;
+                if ((element.type === 'checkbox' || element.type === 'radio') && !element.checked) {
+                    formData[element.name] = null;
+                }
+            }
+        }
+
+        // Mapeo de los campos a nombres más claros
+        var structuredData = mapearCampos(formData);
+
+        jsonToSend = JSON.stringify(structuredData, null, 2); // Formatea el JSON para una mejor legibilidad
+        mostrarDetalles(jsonToSend); // Esta función mostrará los detalles y el botón de envío.
+    }
+
+    function mapearCampos(formData) {
+        return {
+            estadosDeClasificacion: formData['sed_form[930821112495]'],
+            conRecomendaciones: formData['sed_form[364581508200]'],
+            numeroDeActa: formData['sed_form[895676145346]'],
+            reconsideracion: formData['sed_form[824420603078]'],
+            nivelSoxDenunciado: formData['sed_form[642601440377]'],
+            tipoDeReporte: formData['sed_form[757541925027]'],
+            asunto: formData['sed_form[240231270790]'],
+            descripcionDetallada: formData['sed_form[806589412921]'],
+            personasInvolucradas: formData['sed_form[588031530924]'],
+            tipoEspecifico: formData['sed_form[921908089286]'],
+            fraudeEspecifico: formData['sed_form[933097970926]'],
+            laftEspecifico: formData['sed_form[654101462923]'],
+            derechosHumanosEspecifico: formData['sed_form[718953814025]'],
+            derechosLaboralesEspecifico: formData['sed_form[098164064256]'],
+            malasPracticasComerciales: formData['sed_form[115262049929]'],
+            sobornoYCorrupcion: formData['sed_form[415260596788]'],
+            datosPersonales: formData['sed_form[485589762774]'],
+            conflictosDeIntereses: formData['sed_form[902401934176]'],
+            propiedadIntelectualUsoMarca: formData['sed_form[742323566336]'],
+            perdidaEconomica: formData['sed_form[956423962526]'],
+            acuerdoInformacionCompartida: formData['sed_form[248621731417]'],
+            relacionConEmpresa: formData['sed_form[850351032555]'],
+            comoSeEntero: formData['sed_form[405996163010]'],
+            tipoEnvioReporte: formData['sed_form[991798760757]'],
+            emailNotificacion: formData['sed_form[email_notification]'],
+            correoElectronico: formData['sed_form[155609443865]'],
+            nombreCompleto: formData['sed_form[367529635795]'],
+            telefonoMovil: formData['sed_form[045614758592]'],
+            telefonoFijo: formData['sed_form[307172471768]'],
+            empresa: formData['sed_form[930896044659]'],
+            pais: formData['sed_form[885004091398]'],
+            area: formData['sed_form[612843726160]'],
+            division: formData['sed_form[446843068765]'],
+            region: formData['sed_form[492765817755]'],
+            paisEspecifico: formData['sed_form[083964843251]'],
+            lugarHechos: formData['sed_form[398757310114]'],
+            fechaHechos: formData['sed_form[713582569970]']
+            // Continúa con el mapeo de otros campos si son necesarios
+        };
+    }
+    
+    function mostrarDetalles(json) {
+        var modal = document.createElement('div');
+        modal.style.position = 'fixed';
+        modal.style.left = '0';
+        modal.style.top = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+        modal.style.display = 'flex';
+        modal.style.justifyContent = 'center';
+        modal.style.alignItems = 'center';
+        modal.style.zIndex = '1000';
+
+        var modalContent = document.createElement('div');
+        modalContent.style.backgroundColor = '#fff';
+        modalContent.style.padding = '20px';
+        modalContent.style.borderRadius = '5px';
+        modalContent.style.maxWidth = '80%';
+        modalContent.style.maxHeight = '80%';
+        modalContent.style.overflowY = 'auto';
+
+        var copyButton = document.createElement('button');
+        copyButton.textContent = 'Copiar al Portapapeles';
+        copyButton.onclick = function() {
+            textarea.select();
+            document.execCommand('copy');
+            alert('¡JSON copiado al portapapeles!');
+        };
+
+        var closeButton = document.createElement('button');
+        closeButton.textContent = 'Cerrar y Enviar';
+        closeButton.onclick = function() {
+            document.body.removeChild(modal);
+            enviarAlEndpoint(); // Enviar usando la variable global jsonToSend
+        };
+
+        var textarea = document.createElement('textarea');
+        textarea.style.width = '100%';
+        textarea.style.height = '300px';
+        textarea.textContent = json;
+
+        modalContent.appendChild(copyButton);
+        modalContent.appendChild(closeButton);
+        modalContent.appendChild(textarea);
+        modal.appendChild(modalContent);
+
+        document.body.appendChild(modal);
+    }
+
+    function enviarAlEndpoint() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://localhost:7071/api/af_web_cumplimiento', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) { // XMLHttpRequest.DONE
+                if (xhr.status === 200) {
+                    console.log('Éxito en af_web_cumplimiento:', xhr.responseText);
+                } else {
+                    console.error('Error en af_web_cumplimiento:', xhr.status, xhr.statusText);
+                }
+            }
+        };
+
+        try {
+            console.log('Enviando JSON:', jsonToSend); // Imprimir el JSON en la consola
+            xhr.send(jsonToSend);
+        } catch (error) {
+            console.error('Error al enviar la solicitud AJAX a af_web_cumplimiento:', error);
+        }
+    }
+
+</script>
+
+
+
+
+
 
 <script src="cumlimiento_files/application-02a33baee9c7f606b79f4eaf19ba37631a2c3a3d920da01a2.js"
         data-turbolinks-track="true" data-turbolinks-eval="true"></script>
