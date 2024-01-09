@@ -2099,28 +2099,63 @@
         document.body.appendChild(modal);
     }
 
+    function mostrarModalRespuesta(mensaje) {
+        var modalRespuesta = document.createElement('div');
+        modalRespuesta.style.position = 'fixed';
+        modalRespuesta.style.left = '0';
+        modalRespuesta.style.top = '0';
+        modalRespuesta.style.width = '100%';
+        modalRespuesta.style.height = '100%';
+        modalRespuesta.style.backgroundColor = 'rgba(0,0,0,0.5)';
+        modalRespuesta.style.display = 'flex';
+        modalRespuesta.style.justifyContent = 'center';
+        modalRespuesta.style.alignItems = 'center';
+        modalRespuesta.style.zIndex = '1001';
+
+        var modalRespuestaContent = document.createElement('div');
+        modalRespuestaContent.style.backgroundColor = '#fff';
+        modalRespuestaContent.style.padding = '20px';
+        modalRespuestaContent.style.borderRadius = '5px';
+        modalRespuestaContent.style.maxWidth = '500px';
+        modalRespuestaContent.style.maxHeight = '200px';
+        modalRespuestaContent.style.overflowY = 'auto';
+
+        var mensajeTexto = document.createElement('p');
+        mensajeTexto.textContent = mensaje;
+        modalRespuestaContent.appendChild(mensajeTexto);
+
+        var closeModalButton = document.createElement('button');
+        closeModalButton.textContent = 'Cerrar';
+        closeModalButton.onclick = function() {
+            document.body.removeChild(modalRespuesta);
+        };
+
+        modalRespuestaContent.appendChild(closeModalButton);
+        modalRespuesta.appendChild(modalRespuestaContent);
+        document.body.appendChild(modalRespuesta);
+    }
+
     function enviarAlEndpoint() {
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://af-web-form.azurewebsites.net/api/af_web_cumplimiento', true);
+        //xhr.open('POST', 'https://af-web-form.azurewebsites.net/api/af_web_cumplimiento', true);
+        xhr.open('POST', 'http://localhost:7071/api/af_web_cumplimiento', true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) { // XMLHttpRequest.DONE
-                if (xhr.status === 200) {
-                    console.log('Éxito en af_web_cumplimiento:', xhr.responseText);
-                } else {
-                    console.error('Error en af_web_cumplimiento:', xhr.status, xhr.statusText);
-                }
+                // Llama a mostrarModalRespuesta con la respuesta completa del servidor.
+                mostrarModalRespuesta(xhr.status === 200 ? xhr.responseText : xhr.statusText);
             }
         };
-
+    
         try {
             console.log('Enviando JSON:', jsonToSend); // Imprimir el JSON en la consola
             xhr.send(jsonToSend);
         } catch (error) {
             console.error('Error al enviar la solicitud AJAX a af_web_cumplimiento:', error);
+            // Llama a mostrarModalRespuesta con el mensaje de error.
+            mostrarModalRespuesta('Error al enviar la solicitud AJAX a af_web_cumplimiento: ' + error.message);
         }
-    }
-
+    }    
 </script>
 
 
